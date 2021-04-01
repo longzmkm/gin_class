@@ -1,0 +1,43 @@
+zap:
+  level: 'info'
+  format: 'console'
+  prefix: '[GIN-VUE-ADMIN]'
+  director: 'log'
+  link-name: 'latest_log'
+  show-line: true
+  encode-level: 'LowercaseColorLevelEncoder'
+  stacktrace-key: 'stacktrace'
+  log-in-console: true
+mysql:
+  path: '177.7.0.13:3306'
+  config: 'charset=utf8mb4&parseTime=True&loc=Local'
+  db-name: 'gin_class'
+  username: 'root'
+  password: '123456'
+  max-idle-conns: 10
+  max-open-conns: 100
+  log-mode: false
+  log-zap: ""
+
+
+captcha:
+  key-long: 6
+  img-width: 240
+  img-height: 80
+
+jwt:
+  signing-key: 'qmPlus'
+  expires-time: 604800
+  buffer-time: 86400
+
+# local configuration
+local:
+  path: 'uploads/file'
+
+
+system:
+  env: 'public'  # Change to "develop" to skip authentication for development mode
+  addr: 8888
+  db-type: 'mysql'
+  oss-type: 'local'    # 控制oss选择走本期还是 七牛等其他仓 自行增加其他oss仓可以在 server/utils/upload/upload.go 中 NewOss函数配置
+  use-multipoint: false
