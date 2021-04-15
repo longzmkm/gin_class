@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"gin_class/model"
 	"github.com/brocaar/chirpstack-api/go/v3/common"
 	"github.com/brocaar/chirpstack-api/go/v3/gw"
@@ -51,7 +52,9 @@ func Stack(c *gin.Context) {
 	//
 	deviceMap := make(map[lorawan.EUI64]*model.DeviceState)
 	// 先创建一个网关 用来收发数据
-	sgw, err := createGateway(&cf)
+	client := model.Client()
+	defer client.Disconnect(0)
+	sgw, err := createGateway(&cf,client)
 
 	if err != nil {
 		panic(err)
@@ -75,7 +78,7 @@ func Stack(c *gin.Context) {
 		er := json.Unmarshal(message, &cf)
 		if er != nil {
 			fmt.Println("ws解析数据错误")
-			break
+			continue
 		}
 		u, _ := strconv.ParseUint(cf.Frequency, 10, 32)
 		_, found := deviceMap[cf.DevEUI]
@@ -95,9 +98,10 @@ func Stack(c *gin.Context) {
 	//cancel()
 }
 
-func createGateway(cf *model.Config) (*simulator.Gateway, error) {
+func createGateway(cf *model.Config,client mqtt.Client) (*simulator.Gateway, error) {
 	sgw, err := simulator.NewGateway(
-		simulator.WithMQTTCredentials("mq.nlecloud.com:1883", "", ""),
+		simulator.WithMQTTClient(client),
+		//simulator.WithMQTTCredentials("mq.nlecloud.com:1883", "", ""),
 		simulator.WithGatewayID(cf.GatewayID),
 		simulator.WithEventTopicTemplate(cf.Topic+"/gateway/{{ .GatewayID }}/event/{{ .Event }}"),
 		simulator.WithCommandTopicTemplate(cf.Topic+"/gateway/{{ .GatewayID }}/command/{{ .Command }}"),
@@ -129,13 +133,22 @@ func createDevice(ctx context.Context, cf *model.Config, sgw *simulator.Gateway,
 		simulator.WithDownlinkHandlerFunc(func(conf, ack bool, fCntDown uint32, fPort uint8, data []byte) error {
 
 			if len(data) > 0 {
+				var respdata model.RespData
+				err := json.Unmarshal(data, &respdata)
+				if err != nil {
+					fmt.Println(err)
+					fmt.Println("解析数据error")
+				}
+				respdata.Devid = cf.DevEUI.String()
+
+				datas, _ := json.Marshal(respdata)
+
 				// TODO 这边是向下发送数据
-				ws.WriteMessage(1, data)
-				fmt.Printf("Recive Server data: %s, ", data)
+				ws.WriteMessage(1, datas)
+				fmt.Printf("Recive Server data: %s\n ", datas)
 			}
 			return nil
 		}),
 	)
 	return sdv, err
 }
-
