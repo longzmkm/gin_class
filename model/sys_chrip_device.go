@@ -4,6 +4,7 @@ import (
 	simulator "github.com/brocaar/chirpstack-simulator/simulator"
 	"github.com/brocaar/lorawan"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"os"
 	"time"
 )
 
@@ -30,8 +31,12 @@ type RespData struct {
 // Setup configures the NS MQTT gateway backend.
 func Client() mqtt.Client {
 	var mqttClient mqtt.Client
+	mq_addr := os.Getenv("mq")
+	if mq_addr == "" {
+		mq_addr = "mq.nlecloud.com:1883"
+	}
 	opts := mqtt.NewClientOptions()
-	opts.AddBroker("mq.nlecloud.com:1883")
+	opts.AddBroker(mq_addr)
 	opts.SetUsername("")
 	opts.SetPassword("")
 	opts.SetCleanSession(true)

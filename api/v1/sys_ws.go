@@ -4,12 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"gin_class/model"
 	"github.com/brocaar/chirpstack-api/go/v3/common"
 	"github.com/brocaar/chirpstack-api/go/v3/gw"
 	"github.com/brocaar/chirpstack-simulator/simulator"
 	"github.com/brocaar/lorawan"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"net/http"
@@ -54,7 +54,7 @@ func Stack(c *gin.Context) {
 	// 先创建一个网关 用来收发数据
 	client := model.Client()
 	defer client.Disconnect(0)
-	sgw, err := createGateway(&cf,client)
+	sgw, err := createGateway(&cf, client)
 
 	if err != nil {
 		panic(err)
@@ -98,10 +98,9 @@ func Stack(c *gin.Context) {
 	//cancel()
 }
 
-func createGateway(cf *model.Config,client mqtt.Client) (*simulator.Gateway, error) {
+func createGateway(cf *model.Config, client mqtt.Client) (*simulator.Gateway, error) {
 	sgw, err := simulator.NewGateway(
 		simulator.WithMQTTClient(client),
-		//simulator.WithMQTTCredentials("mq.nlecloud.com:1883", "", ""),
 		simulator.WithGatewayID(cf.GatewayID),
 		simulator.WithEventTopicTemplate(cf.Topic+"/gateway/{{ .GatewayID }}/event/{{ .Event }}"),
 		simulator.WithCommandTopicTemplate(cf.Topic+"/gateway/{{ .GatewayID }}/command/{{ .Command }}"),

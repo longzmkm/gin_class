@@ -9,11 +9,11 @@ zap:
   stacktrace-key: 'stacktrace'
   log-in-console: true
 mysql:
-  path: '177.7.0.13:3306'
-  config: 'charset=utf8mb4&parseTime=True&loc=Local'
-  db-name: 'gin_class'
-  username: 'root'
-  password: '123456'
+#  path: '177.7.0.13:3306'
+#  config: 'charset=utf8mb4&parseTime=True&loc=Local'
+#  db-name: 'gin_class'
+#  username: 'root'
+#  password: '123456'
   max-idle-conns: 10
   max-open-conns: 100
   log-mode: false

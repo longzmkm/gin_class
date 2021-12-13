@@ -9,6 +9,7 @@ require (
 	github.com/brocaar/lorawan v0.0.0-20210209142114-4e52629878a0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/dustin/go-coap v0.0.0-20190908170653-752e0f79981e
+	github.com/eclipse/paho.mqtt.golang v1.2.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
 	github.com/gin-gonic/gin v1.6.3

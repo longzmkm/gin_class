@@ -36,9 +36,11 @@ func MysqlTables(db *gorm.DB) {
 
 func GormMysql() *gorm.DB {
 	m := global.GVA_CONFIG.Mysql
-	dsn := m.Username + ":" + m.Password + "@tcp(" + m.Path + ")/" + m.Dbname + "?" + m.Config
-	// TODO 这个地方可以优化
+	dsn := os.Getenv("dsn")
+	mq_addr := os.Getenv("mq")
 	//dsn := m.Username + ":" + m.Password + "@tcp(" + m.Path + ")/" + m.Dbname + "?" + m.Config
+	println(dsn)
+	println(mq_addr)
 	mysqlConfig := mysql.Config{
 		//DriverName                string
 		DSN: dsn, // DSN data source name

@@ -23,31 +23,35 @@ services:
       network:
         ipv4_address: 177.7.0.13
 
-  redis:
-    image: redis:6.0.6
-    container_name: gva-redis # 容器名
-    restart: always
-    ports:
-      - '16379:6379'
-    networks:
-      network:
-        ipv4_address: 177.7.0.14
+#  redis:
+#    image: redis:6.0.6
+#    container_name: gva-redis # 容器名
+#    restart: always
+#    ports:
+#      - '16379:6379'
+#    networks:
+#      network:
+#        ipv4_address: 177.7.0.14
 
 
   server:
-    build:
-      context: ./
-      dockerfile: ./Dockerfile
+#    build:
+#      context: ./
+#      dockerfile: ./Dockerfile
+    image: tlqjxd/gin_class_server:v1.0.2
     container_name: gva-server
     restart: always
+    environment:
+      dsn: root:123456@tcp(177.7.0.13:3306)/gin_class?charset=utf8mb4&parseTime=True&loc=Local
+      mq: mq.nlecloud.com:1883
     ports:
       - '8888:8888'
     depends_on:
       - mysql
-      - redis
+#      - redis
     links:
       - mysql
-      - redis
+#      - redis
     networks:
       network:
         ipv4_address: 177.7.0.12
